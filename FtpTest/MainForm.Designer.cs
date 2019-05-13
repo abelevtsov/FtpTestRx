@@ -43,10 +43,9 @@ namespace FtpTest
             // 
             // btnGetFile
             // 
-            this.btnGetFile.Location = new System.Drawing.Point(37, 33);
-            this.btnGetFile.Margin = new System.Windows.Forms.Padding(4);
+            this.btnGetFile.Location = new System.Drawing.Point(28, 27);
             this.btnGetFile.Name = "btnGetFile";
-            this.btnGetFile.Size = new System.Drawing.Size(100, 28);
+            this.btnGetFile.Size = new System.Drawing.Size(75, 23);
             this.btnGetFile.TabIndex = 0;
             this.btnGetFile.Text = "Get File";
             this.btnGetFile.UseVisualStyleBackColor = true;
@@ -56,57 +55,51 @@ namespace FtpTest
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(34, 135);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(26, 110);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(197, 17);
+            this.label1.Size = new System.Drawing.Size(93, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Estimated time left (s:ms):";
+            this.label1.Text = "Estimated time:";
             // 
             // lblTimeLeft
             // 
-            this.lblTimeLeft.Location = new System.Drawing.Point(235, 135);
-            this.lblTimeLeft.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTimeLeft.Location = new System.Drawing.Point(125, 110);
             this.lblTimeLeft.Name = "lblTimeLeft";
-            this.lblTimeLeft.Size = new System.Drawing.Size(120, 17);
+            this.lblTimeLeft.Size = new System.Drawing.Size(90, 14);
             this.lblTimeLeft.TabIndex = 2;
             this.lblTimeLeft.Text = "[lblTimeLeft]";
             // 
             // txtURI
             // 
-            this.txtURI.Location = new System.Drawing.Point(160, 33);
-            this.txtURI.Margin = new System.Windows.Forms.Padding(4);
+            this.txtURI.Location = new System.Drawing.Point(120, 27);
             this.txtURI.Name = "txtURI";
-            this.txtURI.Size = new System.Drawing.Size(445, 22);
+            this.txtURI.Size = new System.Drawing.Size(335, 20);
             this.txtURI.TabIndex = 5;
-            this.txtURI.Text = "ftp://speedtest.tele2.net/10MB.zip";
+            this.txtURI.Text = "ftp://speedtest.tele2.net/10GB.zip";
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(37, 82);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBar.Location = new System.Drawing.Point(28, 67);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(569, 28);
+            this.progressBar.Size = new System.Drawing.Size(427, 23);
             this.progressBar.TabIndex = 8;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(363, 135);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(272, 110);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(145, 17);
+            this.label4.Size = new System.Drawing.Size(115, 13);
             this.label4.TabIndex = 9;
             this.label4.Text = "Downloaded bytes:";
             // 
             // lblBytesRead
             // 
             this.lblBytesRead.AutoSize = true;
-            this.lblBytesRead.Location = new System.Drawing.Point(506, 135);
-            this.lblBytesRead.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblBytesRead.Location = new System.Drawing.Point(380, 110);
             this.lblBytesRead.Name = "lblBytesRead";
-            this.lblBytesRead.Size = new System.Drawing.Size(99, 17);
+            this.lblBytesRead.Size = new System.Drawing.Size(75, 13);
             this.lblBytesRead.TabIndex = 10;
             this.lblBytesRead.Text = "[lblBytesRead]";
             // 
@@ -115,10 +108,9 @@ namespace FtpTest
             this.lblDownloadComplete.AutoSize = true;
             this.lblDownloadComplete.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblDownloadComplete.ForeColor = System.Drawing.Color.Green;
-            this.lblDownloadComplete.Location = new System.Drawing.Point(232, 231);
-            this.lblDownloadComplete.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDownloadComplete.Location = new System.Drawing.Point(174, 188);
             this.lblDownloadComplete.Name = "lblDownloadComplete";
-            this.lblDownloadComplete.Size = new System.Drawing.Size(188, 25);
+            this.lblDownloadComplete.Size = new System.Drawing.Size(152, 20);
             this.lblDownloadComplete.TabIndex = 11;
             this.lblDownloadComplete.Text = "Download Complete";
             // 
@@ -126,28 +118,26 @@ namespace FtpTest
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(157, 174);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(118, 141);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(160, 17);
+            this.label3.Size = new System.Drawing.Size(123, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Transfer rate (kbps):";
             // 
             // lblRate
             // 
             this.lblRate.AutoSize = true;
-            this.lblRate.Location = new System.Drawing.Point(325, 174);
-            this.lblRate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblRate.Location = new System.Drawing.Point(244, 141);
             this.lblRate.Name = "lblRate";
-            this.lblRate.Size = new System.Drawing.Size(60, 17);
+            this.lblRate.Size = new System.Drawing.Size(46, 13);
             this.lblRate.TabIndex = 13;
             this.lblRate.Text = "[lblRate]";
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 271);
+            this.ClientSize = new System.Drawing.Size(485, 220);
             this.Controls.Add(this.lblRate);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblDownloadComplete);
@@ -159,7 +149,6 @@ namespace FtpTest
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnGetFile);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Ftp Test";
             this.Load += new System.EventHandler(this.MainForm_Load);

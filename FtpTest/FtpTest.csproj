@@ -98,7 +98,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>CredentialsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="State.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

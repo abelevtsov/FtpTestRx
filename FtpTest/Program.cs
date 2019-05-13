@@ -2,9 +2,9 @@ using System.Windows.Forms;
 
 namespace FtpTest
 {
-    static class Program
+    public static class Program
     {
-        static void Main()
+        public static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

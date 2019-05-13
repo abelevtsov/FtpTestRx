@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reactive.Linq;
@@ -11,6 +12,8 @@ namespace FtpTest
     public partial class MainForm : Form
     {
         private const int BufferSize = 4096;
+
+        private readonly Stopwatch stopwatch = new Stopwatch();
 
         public MainForm()
         {
@@ -24,72 +27,84 @@ namespace FtpTest
             try
             {
                 lblDownloadComplete.Visible = false;
-                
+
+                var totalBytesRead = 0;
                 var uri = new Uri(txtURI.Text);
                 if (uri.Scheme == Uri.UriSchemeFtp)
                 {
-                    var frmCreds = new CredentialsForm();
-                    var result = frmCreds.ShowDialog();
+                    var frmCredentials = new CredentialsForm();
+                    var result = frmCredentials.ShowDialog();
                     if (result == DialogResult.Cancel)
                     {
                         return;
                     }
 
-                    ICredentials creds;
-                    if (!(string.IsNullOrEmpty(frmCreds.Username) || string.IsNullOrEmpty(frmCreds.Password)))
+                    ICredentials credentials;
+                    if (string.IsNullOrEmpty(frmCredentials.Username) ||
+                        string.IsNullOrEmpty(frmCredentials.Password))
                     {
-                        creds = new NetworkCredential(frmCreds.Username, frmCreds.Password);
+                        credentials = null;
                     }
                     else
                     {
-                        creds = null;
+                        credentials = new NetworkCredential(frmCredentials.Username, frmCredentials.Password);
                     }
 
-                    var observableWebResponses = (from url in Observable.Return(uri)
-                                                 let req = CreateRequest(url, WebRequestMethods.Ftp.GetFileSize, creds, false, false)
-                                                 from response in req.GetResponseRx()
-                                                 let contentLength = response.ContentLength
-                                                 let req1 = CreateRequest(url, WebRequestMethods.Ftp.DownloadFile, creds, true, true)
-                                                 from response1 in req1.GetResponseRx()
-                                                 let responseStream = response1.GetResponseStream()
-                                                 from buffer in responseStream.ReadRx(BufferSize)
-                                                                              .ObserveOn(SynchronizationContext.Current)
-                                                                              .TakeWhile(returnBuffer => returnBuffer.Length > 0)
-                                                                              .Do(_ => Debug.WriteLine("L = {0}", _.Length))
-                                                  select buffer).Publish();
-                    var fs = new FileStream(@"D:\test.txt", FileMode.Create, FileAccess.Write, FileShare.Write, BufferSize, FileOptions.Asynchronous);
+                    var observableWebResponses =
+                            (from url in Observable.Return(uri)
+                             let fileSizeRequest = CreateRequest(url, WebRequestMethods.Ftp.GetFileSize, credentials, false, false)
+                             from fileSizeResponse in fileSizeRequest.GetResponseRx()
+                             let fileSize = fileSizeResponse.ContentLength
+                             let downloadFileRequest = CreateRequest(url, WebRequestMethods.Ftp.DownloadFile, credentials, true, true)
+                             from downloadFileResponse in downloadFileRequest.GetResponseRx()
+                             let responseStream = downloadFileResponse.GetResponseStream()
+                             from buffer in responseStream.ReadRx(BufferSize)
+                                                          .ObserveOn(SynchronizationContext.Current)
+                                                          .TakeWhile(b => b.Length > 0)
+                                                          .Do(
+                                                              b =>
+                                                              {
+                                                                  totalBytesRead += b.Length;
+                                                                  var completePercent = totalBytesRead / (double)fileSize * 100.0;
+                                                                  var totalTime = stopwatch.Elapsed.TotalMilliseconds;
+                                                                  var kbPerSec = totalBytesRead * 1000.0 / (totalTime * 1024.0);
+                                                                  var estimatedTime = TimeSpan.FromMilliseconds(((double)fileSize - totalBytesRead) / kbPerSec);
+                                                                  ReportProgress(totalBytesRead, completePercent, kbPerSec, estimatedTime);
+                                                              })
+                             select buffer).Publish();
+                    var fs = GetFileStream($@"C:\temp\{Path.GetFileName(txtURI.Text)}");
                     var d = observableWebResponses.Connect();
+                    stopwatch.Start();
                     observableWebResponses
                         .Subscribe(
-                            buffer =>
-                                fs.WriteRx(buffer),
-                            ex =>
-                                MessageBox.Show(ex.Message),
-                            () => Done(fs.Dispose, d.Dispose));
+                            buffer => fs.WriteRx(buffer),
+                            ex => Log(ex.Message),
+                            () =>
+                            {
+                                stopwatch.Stop();
+                                Done(fs.Dispose, d.Dispose);
+                            });
                 }
                 else
                 {
-                    MessageBox.Show("URL must start from ftp://");
+                    Log("URL must start from ftp://");
                 }
             }
             catch (WebException ex)
             {
-                MessageBox.Show(string.Format("Error requesting web page: {0}", ex.Message));
+                Log($"Error requesting web page: {ex.Message}");
             }
             catch (IOException ex)
             {
-                MessageBox.Show(string.Format("Error writing results to file: {0}", ex.Message));
+                Log($"Error writing results to file: {ex.Message}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("An error occured: {0}", ex.Message));
+                Log($"An error occured: {ex.Message}");
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            Init();
-        }
+        private void MainForm_Load(object sender, EventArgs e) => Init();
 
         private void Done(params Action[] disposables)
         {
@@ -105,12 +120,27 @@ namespace FtpTest
             lblRate.Text = string.Empty;
         }
 
-        private static FtpWebRequest CreateRequest(Uri uri, string method, ICredentials creds, bool keepAlive, bool useBinary)
+        private void ReportProgress(int totalBytes, double percentComplete, double transferRate, TimeSpan estimated)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<int, double, double, TimeSpan>(ReportProgress), totalBytes, percentComplete, transferRate, estimated);
+            }
+            else
+            {
+                lblTimeLeft.Text = estimated.ToString("g");
+                lblBytesRead.Text = totalBytes.ToString(CultureInfo.InvariantCulture);
+                progressBar.Value = (int)percentComplete;
+                lblRate.Text = transferRate.ToString("F0");
+            }
+        }
+
+        private static FtpWebRequest CreateRequest(Uri uri, string method, ICredentials credentials, bool keepAlive, bool useBinary)
         {
             var request = (FtpWebRequest)WebRequest.Create(uri);
-            if (creds != null)
+            if (credentials != null)
             {
-                request.Credentials = creds;
+                request.Credentials = credentials;
             }
 
             request.KeepAlive = keepAlive;
@@ -122,5 +152,18 @@ namespace FtpTest
 
             return request;
         }
+
+        private static FileStream GetFileStream(string path)
+        {
+            var directoryName = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
+
+            return new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write, BufferSize, FileOptions.Asynchronous);
+        }
+
+        private static void Log(string message) => MessageBox.Show(message);
     }
 }
